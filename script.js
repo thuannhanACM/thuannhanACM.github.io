@@ -72,16 +72,24 @@ const data = {
       ],
     },
     {
-      title: 'Project Three',
-      tagline: 'One-line summary of what it is.',
-      period: '2023',
-      role: 'Your role',
-      image: '',
-      description: 'Longer description shown on expand.',
-      highlights: ['Result one.', 'Result two.'],
-      tech: ['Python', 'FastAPI'],
-      demo: '',
-      repo: 'https://github.com/thuannhanACM',
+      title: 'Fight of the Ages (FOTA)',
+      tagline: 'Lead legendary heroes through epic battles across three realms.',
+      period: 'Feb 2022 – May 2023',
+      role: 'Gameplay Engineer',
+      image: 'assets/projects/fota.jpg',
+      description: 'A real-time tactical RPG where players build powerful squads, explore a rich fantasy universe, and compete across PvE campaigns, PvP battles, and seasonal championships.',
+      highlights: [
+        'Developed core gameplay systems for a real-time multiplayer RPG — progression mechanics, character abilities, and multiplayer features.',
+        'Designed and implemented scalable PvE and PvP combat systems, delivering responsive real-time gameplay and key milestones.',
+        'Collaborated with game designers to turn gameplay concepts into maintainable, production-ready systems.',
+        'Integrated blockchain services — NFT and wallet functionality — enabling seamless interaction between the game and its marketplace ecosystem.',
+        'Contributed to system-architecture improvements for better maintainability, scalability, and long-term development efficiency.',
+      ],
+      tech: ['Unity', 'C#', 'Lua', 'SQL', 'PostgreSQL', 'Redis', 'WalletConnect', 'MetaMask'],
+      links: [
+        { label: 'Website', url: 'https://fota.io/', icon: 'website' },
+        { label: 'Championship video', url: 'https://www.youtube.com/watch?v=bQrjsnZ2Az4&t=7s', icon: 'youtube' },
+      ],
     },
     {
       title: 'Project Four',
@@ -153,6 +161,8 @@ const ICONS = {
   chevron: '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
   googleplay: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.3c-.2.2-.3.6-.3 1v17.4c0 .4.1.8.3 1l.1.1L13 12.1v-.2L3.7 2.2l-.1.1zM17 15.3l-3.1-3.1v-.2L17 8.8l.1.1 3.7 2.1c1 .6 1 1.6 0 2.2L17.1 15.2l-.1.1zM16.4 15.9 13.2 12.7 3.7 22.2c.3.4.9.4 1.5.1l11.2-6.4M16.4 8.1 4.9 1.7c-.6-.3-1.2-.3-1.5.1l9.8 9.6 3.2-3.3z"/></svg>',
   apple: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.5c0-2.1 1.7-3.1 1.8-3.2-1-1.4-2.5-1.6-3-1.6-1.3-.1-2.5.8-3.1.8-.6 0-1.6-.7-2.7-.7-1.4 0-2.7.8-3.4 2-1.5 2.5-.4 6.3 1 8.3.7 1 1.5 2.1 2.6 2.1 1 0 1.4-.7 2.7-.7 1.2 0 1.6.7 2.7.6 1.1 0 1.8-1 2.5-2 .8-1.2 1.1-2.3 1.1-2.4-.1 0-2.1-.8-2.2-3.2zM15 6.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.6 1 .1 1.9-.5 2.5-1.2z"/></svg>',
+  website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 0 20 15.3 15.3 0 0 1 0-20z"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 4.9 12 4.9 12 4.9s-7 0-8.9.5A3 3 0 0 0 1 7.5 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.5 31 31 0 0 0-.5-4.5zM9.8 15.3V8.7l5.7 3.3-5.7 3.3z"/></svg>',
 };
 
 /* deterministic gradient from a string, for placeholder thumbnails */

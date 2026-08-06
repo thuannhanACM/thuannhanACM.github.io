@@ -129,16 +129,23 @@ const data = {
       ],
     },
     {
-      title: 'Project Six',
-      tagline: 'One-line summary of what it is.',
-      period: '2022',
-      role: 'Your role',
-      image: '',
-      description: 'Longer description shown on expand.',
-      highlights: ['Result one.', 'Result two.'],
-      tech: ['Go', 'Docker'],
-      demo: '',
-      repo: 'https://github.com/thuannhanACM',
+      title: 'GOKEN',
+      tagline: 'Embark on a journey where every battle shapes your legend.',
+      period: 'Jan 2017 – Jun 2018',
+      role: 'Gameplay Engineer',
+      image: 'assets/projects/goken.jpg',
+      description: 'An action RPG inspired by classic Japanese adventures, featuring real-time combat, open-world exploration, and character progression in a vibrant fantasy world.',
+      highlights: [
+        'Built core combat, character controller, and AI systems for a real-time action JRPG.',
+        'Developed Unity editor tools to improve level design and gameplay iteration efficiency.',
+        'Implemented cinematic systems, VFX, and camera effects to enhance player immersion.',
+        'Optimized client performance and created Lua scripting tools for quests and story-driven content.',
+      ],
+      tech: ['Unity', 'C#', 'Lua', 'SQLite'],
+      gallery: ['assets/projects/goken-ref-1.jpg', 'assets/projects/goken-ref-2.jpg'],
+      links: [
+        { label: 'Gameplay video', url: 'https://www.youtube.com/watch?v=g0V0cwqM9k0', icon: 'youtube' },
+      ],
     },
   ],
 
@@ -270,6 +277,11 @@ function renderProjects() {
         : null,
       pr.tech && pr.tech.length
         ? el('ul', { class: 'tags' }, pr.tech.map((t) => el('li', {}, t)))
+        : null,
+      pr.gallery && pr.gallery.length
+        ? el('div', { class: 'gallery' }, pr.gallery.map((src) =>
+            el('a', { href: src, target: '_blank', rel: 'noreferrer' },
+              el('img', { src, alt: pr.title + ' reference', loading: 'lazy' }))))
         : null,
       linkRow(pr),
     );

@@ -33,19 +33,24 @@ const data = {
   // ------- 6 PROJECTS (large, foldable) -------
   projects: [
     {
-      title: 'Project One',                     // TODO
-      tagline: 'One-line summary of what it is.',
-      period: '2024',
-      role: 'Full-stack developer',
-      image: '',                                // 'assets/projects/one.png'
-      description: 'A longer description that appears when the card is expanded. Explain the problem, what you built, and why it mattered.',
+      title: 'Kingdom Maker',
+      tagline: 'Medieval strategy MMO — worldwide launch',
+      period: '2025 – Present',
+      role: 'Gameplay Engineer',
+      image: 'assets/projects/kingdom-maker.png',
+      description: 'A globally-launched medieval strategy MMO — a living world where every kingdom tells its own story. I develop multiplayer gameplay across both client and server, shipping live updates while keeping systems scalable and maintainable.',
       highlights: [
-        'A concrete result or metric (e.g. cut load time by 40%).',
-        'A notable technical decision or feature you owned.',
+        'Shipped multiplayer gameplay features across client and server for live updates, with scalability and long-term maintainability in mind.',
+        'Built major gameplay systems — Army Templates and Funds Events — supporting live operations with minimal player disruption.',
+        'Optimized combat-server architecture, cutting active combat-instance overhead to improve efficiency, stability, and runtime performance.',
+        'Improved backend services and loading workflows for faster initialization, better resource use, and a smoother player experience.',
+        'Collaborated with designers, artists, and backend engineers to deliver features and live-event content in an agile environment.',
       ],
-      tech: ['React', 'Node.js', 'PostgreSQL'],
-      demo: '',                                 // 'https://...'
-      repo: 'https://github.com/thuannhanACM',
+      tech: ['C++', 'TypeScript', 'MySQL', 'Redis', 'Unity', 'C#'],
+      links: [
+        { label: 'Google Play', url: 'https://play.google.com/store/apps/details?id=com.gww.km', icon: 'googleplay' },
+        { label: 'App Store', url: 'https://apps.apple.com/us/app/kingdom-maker-build-strategy/id1477420430', icon: 'apple' },
+      ],
     },
     {
       title: 'Project Two',
@@ -139,6 +144,8 @@ const ICONS = {
   email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>',
   external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>',
   chevron: '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+  googleplay: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.3c-.2.2-.3.6-.3 1v17.4c0 .4.1.8.3 1l.1.1L13 12.1v-.2L3.7 2.2l-.1.1zM17 15.3l-3.1-3.1v-.2L17 8.8l.1.1 3.7 2.1c1 .6 1 1.6 0 2.2L17.1 15.2l-.1.1zM16.4 15.9 13.2 12.7 3.7 22.2c.3.4.9.4 1.5.1l11.2-6.4M16.4 8.1 4.9 1.7c-.6-.3-1.2-.3-1.5.1l9.8 9.6 3.2-3.3z"/></svg>',
+  apple: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.5c0-2.1 1.7-3.1 1.8-3.2-1-1.4-2.5-1.6-3-1.6-1.3-.1-2.5.8-3.1.8-.6 0-1.6-.7-2.7-.7-1.4 0-2.7.8-3.4 2-1.5 2.5-.4 6.3 1 8.3.7 1 1.5 2.1 2.6 2.1 1 0 1.4-.7 2.7-.7 1.2 0 1.6.7 2.7.6 1.1 0 1.8-1 2.5-2 .8-1.2 1.1-2.3 1.1-2.4-.1 0-2.1-.8-2.2-3.2zM15 6.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.6 1 .1 1.9-.5 2.5-1.2z"/></svg>',
 };
 
 /* deterministic gradient from a string, for placeholder thumbnails */
@@ -202,6 +209,12 @@ function renderAbout() {
 
 function linkRow(pr) {
   const row = el('div', { class: 'project-links' });
+  // Generic labelled links: [{ label, url, icon }]  (icon = key in ICONS)
+  (pr.links || []).forEach((lnk) => {
+    if (!lnk.url) return;
+    const icon = ICONS[lnk.icon] || ICONS.external;
+    row.append(el('a', { href: lnk.url, target: '_blank', rel: 'noreferrer', html: icon + '<span>' + lnk.label + '</span>' }));
+  });
   if (pr.demo) row.append(el('a', { href: pr.demo, target: '_blank', rel: 'noreferrer', html: ICONS.external + '<span>Live demo</span>' }));
   if (pr.repo) row.append(el('a', { href: pr.repo, target: '_blank', rel: 'noreferrer', html: ICONS.github + '<span>Source</span>' }));
   return row;

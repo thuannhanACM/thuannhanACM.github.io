@@ -1,0 +1,4 @@
+# Put your assets here:
+#   avatar.jpg            -> profile.avatar in script.js
+#   resume.pdf            -> profile.cvUrl in script.js
+#   projects/one.png ...  -> project.image in script.js

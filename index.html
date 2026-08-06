@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio of thuannhanACM — selected projects and prototypes." />
+  <title>thuannhanACM — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  <div class="layout">
+    <!-- LEFT: sticky intro -->
+    <header class="intro">
+      <div class="intro-top">
+        <div class="avatar" id="avatar"></div>
+        <h1 class="name" id="name"></h1>
+        <p class="headline" id="headline"></p>
+        <p class="bio" id="bio"></p>
+
+        <nav class="nav" aria-label="Section navigation">
+          <ul id="nav-list"></ul>
+        </nav>
+      </div>
+
+      <div class="intro-bottom">
+        <a class="cv-btn" id="cv-btn" href="#" target="_blank" rel="noreferrer">Résumé</a>
+        <ul class="socials" id="socials" aria-label="Social links"></ul>
+      </div>
+    </header>
+
+    <!-- RIGHT: scrolling content -->
+    <main id="content" class="content">
+      <section id="about" class="section" aria-label="About">
+        <h2 class="section-title mobile-only">About</h2>
+        <div class="about-body" id="about-body"></div>
+        <ul class="skills" id="skills"></ul>
+      </section>
+
+      <section id="projects" class="section" aria-label="Projects">
+        <h2 class="section-title mobile-only">Projects</h2>
+        <div id="projects-list"></div>
+      </section>
+
+      <section id="others" class="section" aria-label="Others">
+        <h2 class="section-title mobile-only">Others</h2>
+        <div class="others-grid" id="others-grid"></div>
+      </section>
+
+      <footer class="site-footer">
+        <p id="footer-text"></p>
+      </footer>
+    </main>
+  </div>
+
+  <noscript>
+    <p style="padding:2rem;color:#ccd6f6;background:#0a192f;">
+      This portfolio renders its content with JavaScript. Please enable JavaScript to view it.
+    </p>
+  </noscript>
+
+  <script src="script.js"></script>
+</body>
+</html>

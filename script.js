@@ -36,7 +36,7 @@ const data = {
       title: 'Kingdom Maker',
       tagline: 'Medieval strategy MMO — worldwide launch',
       period: '2025 – Present',
-      role: 'Gameplay Engineer',
+      role: 'Senior Gameplay Engineer',
       image: 'assets/projects/kingdom-maker.png',
       description: 'A globally-launched medieval strategy MMO — a living world where every kingdom tells its own story. I develop multiplayer gameplay across both client and server, shipping live updates while keeping systems scalable and maintainable.',
       highlights: [
@@ -75,7 +75,7 @@ const data = {
       title: 'Fight of the Ages (FOTA)',
       tagline: 'Lead legendary heroes through epic battles across three realms.',
       period: 'Feb 2022 – May 2023',
-      role: 'Gameplay Engineer',
+      role: 'Senior Gameplay Engineer',
       image: 'assets/projects/fota.jpg',
       description: 'A real-time tactical RPG where players build powerful squads, explore a rich fantasy universe, and compete across PvE campaigns, PvP battles, and seasonal championships.',
       highlights: [
@@ -95,7 +95,7 @@ const data = {
       title: 'Sniper Zombies',
       tagline: 'Precision is your last line of defense.',
       period: 'Feb 2021 – Feb 2022',
-      role: 'Gameplay Developer',
+      role: 'Lead Game Developer',
       image: 'assets/projects/sniper-zombies.png',
       description: 'A 3D sniper action game combining tactical shooting, zombie survival, and weapon progression across both offline and online gameplay modes.',
       highlights: [
@@ -114,7 +114,7 @@ const data = {
       title: 'VEGA Conflict',
       tagline: 'Command your fleet. Conquer the galaxy.',
       period: 'Nov 2018 – Feb 2021',
-      role: 'Gameplay Engineer',
+      role: 'Senior Game Developer',
       image: 'assets/projects/vega-conflict.png',
       description: 'A real-time space strategy MMO featuring tactical fleet combat, ship customization, and large-scale multiplayer warfare in a persistent sci-fi universe.',
       highlights: [
@@ -132,7 +132,7 @@ const data = {
       title: 'GOKEN',
       tagline: 'Embark on a journey where every battle shapes your legend.',
       period: 'Jan 2017 – Jun 2018',
-      role: 'Gameplay Engineer',
+      role: 'Senior Game Developer',
       image: 'assets/projects/goken.jpg',
       description: 'An action RPG inspired by classic Japanese adventures, featuring real-time combat, open-world exploration, and character progression in a vibrant fantasy world.',
       highlights: [
@@ -151,10 +151,22 @@ const data = {
 
   // ------- OTHERS: prototypes (small, not foldable) -------
   others: [
-    { title: 'Prototype A', desc: 'One-line description of a small experiment.', tech: 'Canvas / JS', link: '' },
-    { title: 'Prototype B', desc: 'One-line description of a small experiment.', tech: 'Python', link: '' },
-    { title: 'Prototype C', desc: 'One-line description of a small experiment.', tech: 'WebGL', link: '' },
+    {
+      title: 'Robot Shooting VR',
+      desc: 'A multiplayer VR robot shooter built for HTC Vive and Oculus Rift.',
+      tech: 'Unity / C# / Photon',
+      link: 'https://www.youtube.com/watch?v=g92dkBUT-2o',
+    },
+    {
+      title: 'Dice Hero',
+      desc: 'A dice-driven hero battler prototyped with AI-assisted tooling.',
+      tech: 'Unity / C# / Claude / Coplay MCP',
+      link: 'https://drive.google.com/file/d/1J59dYbZhgKff2TQLWoUE9Nz8uEaGI4LG/view?usp=drive_link',
+    },
   ],
+
+  // ------- TO BE CONTINUED: teaser for upcoming work (add items to fill) -------
+  wip: [],
 };
 
 /* =====================================================================
@@ -289,9 +301,9 @@ function renderProjects() {
   });
 }
 
-function renderOthers() {
-  const grid = $('#others-grid');
-  data.others.forEach((o) => {
+function renderProtoCards(items, containerId) {
+  const grid = $('#' + containerId);
+  items.forEach((o) => {
     const top = el('div', { class: 'proto-top' },
       el('h4', {}, o.title),
       o.link ? el('a', { class: 'proto-link', href: o.link, target: '_blank', rel: 'noreferrer', 'aria-label': o.title + ' link', html: ICONS.external }) : null,
@@ -330,7 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderNav();
   renderAbout();
   renderProjects();
-  renderOthers();
+  renderProtoCards(data.others, 'others-grid');
+  renderProtoCards(data.wip, 'wip-grid');
+  if (!data.wip.length) {
+    $('#wip-grid').append(el('div', { class: 'proto-card placeholder' },
+      el('p', {}, 'More experiments coming soon…')));
+  }
   renderFooter();
   initScrollSpy();
 });

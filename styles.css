@@ -340,6 +340,20 @@ a { color: var(--accent); text-decoration: none; }
 .proto-card a.proto-link:hover { color: var(--accent); }
 .proto-card a.proto-link svg { width: 20px; height: 20px; }
 
+.wip-note { font-size: 0.9rem; color: var(--slate); margin-bottom: 1.4rem; }
+.proto-card.placeholder {
+  border-style: dashed;
+  border-color: #274069;
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--slate);
+  font-style: italic;
+  min-height: 88px;
+}
+.proto-card.placeholder:hover { transform: none; border-color: var(--accent); }
+
 /* footer */
 .site-footer { font-size: 0.8rem; color: var(--slate); }
 .site-footer a { color: var(--slate-light); }

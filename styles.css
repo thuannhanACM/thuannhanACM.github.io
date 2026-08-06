@@ -90,6 +90,13 @@ a { color: var(--accent); text-decoration: none; }
   letter-spacing: -0.02em;
 }
 
+.fullname {
+  font-size: 0.9rem;
+  color: var(--slate);
+  margin-top: 0.2rem;
+  font-style: italic;
+}
+
 .headline {
   font-size: 1.15rem;
   color: var(--slate-light);

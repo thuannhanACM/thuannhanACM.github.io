@@ -6,25 +6,28 @@
    ===================================================================== */
 const data = {
   profile: {
-    name: 'Your Name',                          // TODO: replace
-    headline: 'Software Engineer',              // TODO: replace
-    bio: 'Short one-to-three sentence intro that sits in the sticky column. Say what you build and what you care about.', // TODO
-    avatar: '',                                 // TODO: 'assets/avatar.jpg' (empty = initials)
-    cvUrl: 'assets/resume.pdf',                 // TODO: add the PDF, or point elsewhere
-    email: 'thuannhanniit@gmail.com',           // TODO: confirm
+    name: 'Nhan Dinh',
+    fullName: 'Đinh Hoàng Thuận Nhân',
+    headline: 'Unity Gameplay Engineer',
+    bio: 'Senior Unity Developer with 10+ years of experience. I build gameplay systems, squash bugs, and occasionally create new ones — only to squash them again. I enjoy clean architecture, smooth gameplay, and pretending every feature only takes “a couple of hours.”',
+    avatar: 'assets/avatar.jpg',
+    cvUrl: 'assets/resume.pdf',
+    email: 'thuannhanniit@gmail.com',
     github: 'https://github.com/thuannhanACM',
-    linkedin: 'https://www.linkedin.com/in/your-handle', // TODO: replace
+    linkedin: 'https://www.linkedin.com/in/nhan-dinh-851742136/',
   },
 
   about: [
     // Each string is a paragraph. Use <a href="">text</a> for inline links.
-    'Write a couple of paragraphs about yourself here. What you do, your focus, a bit of personality. This is the About block on the right column.',
-    'A second paragraph is optional — background, current interests, or what you are looking for.',
+    'I\'m a Senior Unity Developer with over 10 years of experience building mobile games from prototype to live operations. I enjoy designing scalable gameplay systems, optimizing performance, and turning ideas into polished player experiences.',
+    'Beyond writing code, I value clean architecture, collaboration, and mentoring teammates to build high-quality games together.',
   ],
 
   skills: [
-    'JavaScript', 'TypeScript', 'React', 'Node.js',
-    'Python', 'Git', 'REST APIs', 'SQL',        // TODO: replace with your real stack
+    'Unity', 'C / C++', 'C#', 'Swift', 'Java', 'Lua', 'Scala', 'TypeScript',
+    'Git / Plastic SCM / Perforce / SVN',
+    'MySQL / NoSQL / PostgreSQL / Redis',
+    'AI (Claude Code, Coplay MCP)',
   ],
 
   // ------- 6 PROJECTS (large, foldable) -------
@@ -165,6 +168,9 @@ function renderProfile(p) {
   const av = $('#avatar');
   if (p.avatar) av.append(el('img', { src: p.avatar, alt: p.name })); else av.textContent = initials(p.name);
   $('#name').textContent = p.name;
+  if (p.fullName) {
+    $('#name').insertAdjacentElement('afterend', el('p', { class: 'fullname' }, p.fullName));
+  }
   $('#headline').textContent = p.headline;
   $('#bio').textContent = p.bio;
 

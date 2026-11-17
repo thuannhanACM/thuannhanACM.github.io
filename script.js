@@ -30,12 +30,29 @@ const data = {
     'AI (Claude Code, Coplay MCP)',
   ],
 
-  // ------- 6 PROJECTS (large, foldable) -------
+  // ------- PROJECTS (large, foldable) -------
   projects: [
+    {
+      title: 'Brain Bucks — Casual Puzzle Games',
+      tagline: 'Short, satisfying mobile puzzles — shipped on a fast cadence.',
+      period: 'Aug 2026 – Present',
+      role: 'Senior Unity Developer',
+      image: 'assets/projects/brain-bucks.jpg',
+      description: 'A growing line-up of casual and hyper-casual puzzle titles released under the Brain Bucks label. Each game is small in scope but built around a tight, satisfying core loop — rapid prototyping, quick iteration on feel, and frequent store releases.',
+      tech: ['Unity', 'C#', 'iOS', 'Figma', 'AI (Claude Code)'],
+      videos: [
+        { src: 'assets/projects/freight-frenzy.mp4', poster: 'assets/projects/freight-frenzy.jpg', label: 'Freight Frenzy: Cargo Puzzles' },
+        { src: 'assets/projects/roll-call-sushi-sort.mp4', poster: 'assets/projects/roll-call-sushi-sort.jpg', label: 'Roll Call: Sushi Sort' },
+        { src: 'assets/projects/jelly-block.mp4', poster: 'assets/projects/jelly-block.jpg', label: 'Jelly Block: Tasty Puzzle' },
+      ],
+      links: [
+        { label: 'Freight Frenzy: Cargo Puzzles', url: 'https://apps.apple.com/app/id6809842232', icon: 'apple' },
+      ],
+    },
     {
       title: 'Kingdom Maker',
       tagline: 'Medieval strategy MMO — worldwide launch',
-      period: '2025 – Present',
+      period: '2025 – 2026',
       role: 'Senior Gameplay Engineer',
       image: 'assets/projects/kingdom-maker.png',
       description: 'A globally-launched medieval strategy MMO — a living world where every kingdom tells its own story. I develop multiplayer gameplay across both client and server, shipping live updates while keeping systems scalable and maintainable.',
@@ -269,6 +286,24 @@ function linkRow(pr) {
   return row;
 }
 
+/* vertical gameplay clips: [{ src, poster, label }] — autoplaying, muted, looping */
+function clipsNode(pr) {
+  if (!pr.videos || !pr.videos.length) return null;
+  const wrap = el('div', { class: 'clips' });
+  pr.videos.forEach((v) => {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const vid = el('video', {
+      src: v.src, poster: v.poster || null, preload: 'metadata',
+      autoplay: still ? null : '', loop: '', playsinline: '',
+      controls: still ? '' : null, // no autoplay for reduced-motion users — give them a play button instead
+      'aria-label': (v.label || pr.title) + ' gameplay',
+    });
+    vid.muted = true; // must be a property, not just an attribute, for autoplay to be allowed
+    wrap.append(el('figure', { class: 'clip' }, vid, v.label ? el('figcaption', {}, v.label) : null));
+  });
+  return wrap;
+}
+
 function renderProjects() {
   const list = $('#projects-list');
   data.projects.forEach((pr) => {
@@ -290,6 +325,7 @@ function renderProjects() {
       pr.tech && pr.tech.length
         ? el('ul', { class: 'tags' }, pr.tech.map((t) => el('li', {}, t)))
         : null,
+      clipsNode(pr),
       pr.gallery && pr.gallery.length
         ? el('div', { class: 'gallery' }, pr.gallery.map((src) =>
             el('a', { href: src, target: '_blank', rel: 'noreferrer' },

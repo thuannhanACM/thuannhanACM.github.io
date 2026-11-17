@@ -23,6 +23,7 @@ Drop files in [`assets/`](assets/) and reference them from `script.js`:
 | Avatar | `assets/avatar.jpg` | `profile.avatar` |
 | Résumé | `assets/resume.pdf` | `profile.cvUrl` |
 | Project thumbnail | `assets/projects/<name>.png` | `project.image` |
+| Gameplay clip | `assets/projects/<name>.mp4` | `project.videos[]` (`{ src, poster, label }`) |
 
 If `image`/`avatar` is left empty, a colored gradient placeholder with initials is generated
 automatically.

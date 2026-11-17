@@ -307,6 +307,38 @@ a { color: var(--accent); text-decoration: none; }
 .gallery a:hover { transform: translateY(-3px); border-color: var(--accent); }
 .gallery img { width: 100%; height: 100%; object-fit: cover; }
 
+.clips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin: 0.4rem 0 1rem;
+}
+.clip {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* fixed height, auto width — clips of different aspect ratios still line up */
+.clip video {
+  display: block;
+  height: 240px;
+  width: auto;
+  border-radius: 10px;
+  border: 1px solid #1f345c;
+  background: #0a192f;
+}
+.clip figcaption {
+  margin-top: 0.4rem;
+  /* width:0 + min-width:100% keeps the caption from widening the clip — it wraps to the video's width */
+  width: 0;
+  min-width: 100%;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--slate);
+  text-align: center;
+}
+
 .project-links { display: flex; gap: 1.2rem; margin-top: 0.4rem; }
 .project-links a {
   display: inline-flex; align-items: center; gap: 0.4rem;

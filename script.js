@@ -37,7 +37,7 @@ const data = {
       tagline: 'Short, satisfying mobile puzzles — shipped on a fast cadence.',
       period: 'Aug 2026 – Present',
       role: 'Senior Unity Developer',
-      image: 'assets/projects/brain-bucks.jpg',
+      image: '',
       description: 'A growing line-up of casual and hyper-casual puzzle titles released under the Brain Bucks label. Each game is small in scope but built around a tight, satisfying core loop — rapid prototyping, quick iteration on feel, and frequent store releases.',
       tech: ['Unity', 'C#', 'iOS', 'Figma', 'AI (Claude Code)'],
       videos: [

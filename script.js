@@ -13,7 +13,7 @@ const data = {
     avatar: 'assets/avatar.jpg',
     cvUrl: 'assets/resume.pdf',
     email: 'thuannhanniit@gmail.com',
-    github: 'https://github.com/thuannhanACM',
+    // github: 'https://github.com/thuannhanACM',  // hidden
     linkedin: 'https://www.linkedin.com/in/nhan-dinh-851742136/',
   },
 

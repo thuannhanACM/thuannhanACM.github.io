@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocket Legion GDD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: tài liệu một cột, mục lục dính bên trái từ 1040px; nhãn mục dạng mono như quân lệnh */
+:root{
+  --bg:#f1f2f4;
+  --surface:#ffffff;
+  --surface-2:#e7e9ee;
+  --fg:#181a1f;
+  --muted:#5b5f69;
+  --line:#d1d4db;
+  --steel:#2f5486;
+  --steel-soft:#dde5f2;
+  --moss:#3f6b4a;
+  --moss-soft:#dfebe1;
+  --crimson:#9a2f36;
+  --crimson-soft:#f6dcdd;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171c;--surface:#1d2026;--surface-2:#262a32;--fg:#e3e5ea;--muted:#949aa5;--line:#333845;
+    --steel:#7ba4da;--steel-soft:#1d2a3d;--moss:#79b088;--moss-soft:#1b2d20;
+    --crimson:#e08c8c;--crimson-soft:#331d1e;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171c;--surface:#1d2026;--surface-2:#262a32;--fg:#e3e5ea;--muted:#949aa5;--line:#333845;
+  --steel:#7ba4da;--steel-soft:#1d2a3d;--moss:#79b088;--moss-soft:#1b2d20;
+  --crimson:#e08c8c;--crimson-soft:#331d1e;color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.65}
+img{max-width:100%}
+
+.shell{max-width:1280px;margin:0 auto;
+  padding-left:max(20px,env(safe-area-inset-left,0px));
+  padding-right:max(20px,env(safe-area-inset-right,0px));
+  padding-block:0 72px}
+.layout{display:block}
+@media (min-width:1040px){.layout{display:grid;grid-template-columns:232px minmax(0,1fr);gap:56px;align-items:start}}
+
+.masthead{padding-block:56px 36px;border-bottom:1px solid var(--line)}
+.kicker{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin:0 0 14px}
+h1{font-family:var(--font-display);font-weight:800;font-size:clamp(2.4rem,7vw,4.2rem);line-height:1.02;letter-spacing:-.025em;margin:0;text-wrap:balance}
+.alt-names{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);margin:14px 0 0}
+.pitch{max-width:62ch;font-size:1.0625rem;margin:24px 0 0;padding-left:18px;border-left:3px solid var(--steel)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:0;list-style:none}
+.chips li{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.03em;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);padding:5px 10px}
+.chips b{color:var(--fg);font-weight:600}
+
+.toc{padding-block:28px 0}
+@media (min-width:1040px){.toc{position:sticky;top:24px;padding-block:52px 0;max-height:calc(100vh - 48px);overflow-y:auto}}
+.toc h2{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:500}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.toc a{display:flex;gap:10px;text-decoration:none;color:var(--muted);font-size:13.5px;padding:3px 0;line-height:1.4}
+.toc a:hover,.toc a:focus-visible{color:var(--steel)}
+.toc .n{font-family:var(--font-mono);font-size:11.5px;padding-top:2px;opacity:.8;min-width:18px}
+
+section{padding-block:48px 0;scroll-margin-top:24px}
+section + section{border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin:0 0 10px}
+h2.sec{font-family:var(--font-display);font-weight:700;font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.15;letter-spacing:-.018em;margin:0 0 20px;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:600;font-size:1.1rem;letter-spacing:-.008em;margin:32px 0 10px}
+p{margin:0 0 16px;max-width:68ch}
+ul,ol{max-width:68ch;padding-left:20px;margin:0 0 16px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--surface-2);border:1px solid var(--line);padding:1px 5px}
+a{color:var(--steel)}
+
+.flow{display:flex;flex-direction:column;margin:0 0 28px;max-width:72ch}
+.beat{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;background:var(--surface);border:1px solid var(--line);padding:18px 20px}
+.beat-n{font-family:var(--font-mono);font-weight:600;font-size:14px;color:var(--bg);background:var(--steel);width:30px;height:30px;display:grid;place-items:center}
+.beat h4{font-family:var(--font-display);font-weight:700;font-size:1rem;margin:3px 0 6px;letter-spacing:-.005em}
+.beat h4 span{font-family:var(--font-mono);font-weight:400;font-size:12px;color:var(--muted);letter-spacing:0;margin-left:8px}
+.beat p{margin:0;font-size:14.5px;color:var(--muted);max-width:none}
+.beat p + p{margin-top:6px}
+.beat .ad{color:var(--moss);font-weight:500}
+.arrow{font-family:var(--font-mono);color:var(--line);padding:4px 0 4px 34px;font-size:13px;line-height:1}
+.arrow::before{content:"↓";color:var(--steel)}
+
+.tw{overflow-x:auto;margin:0 0 24px;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:440px}
+caption{text-align:left;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px 0}
+th,td{text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:var(--font-mono);font-weight:500;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:13.5px}
+.good{color:var(--moss);font-weight:500}
+.bad{color:var(--crimson);font-weight:500}
+
+.note{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--moss);padding:16px 20px;margin:0 0 24px;max-width:72ch}
+.note.warn{border-left-color:var(--crimson)}
+.note.key{border-left-color:var(--steel)}
+.note p:last-child{margin-bottom:0}
+.note .label{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--moss);display:block;margin-bottom:6px}
+.note.warn .label{color:var(--crimson)}
+.note.key .label{color:var(--steel)}
+
+pre{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);padding:16px 18px;overflow-x:auto;margin:0 0 24px;line-height:1.55}
+
+.grid2{display:grid;gap:16px;margin:0 0 24px}
+@media (min-width:720px){.grid2{grid-template-columns:1fr 1fr}}
+.card{background:var(--surface);border:1px solid var(--line);padding:18px 20px;min-width:0}
+.card h4{font-family:var(--font-display);font-weight:700;font-size:1rem;margin:0 0 8px}
+.card p{font-size:14.5px;color:var(--muted);margin:0;max-width:none}
+
+.gate{display:inline-block;font-family:var(--font-mono);font-size:12px;font-weight:500;background:var(--steel-soft);color:var(--steel);padding:2px 8px;white-space:nowrap}
+
+figure{margin:0 0 28px}
+figcaption{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.05em;color:var(--muted);margin-top:10px;line-height:1.55;max-width:68ch}
+.fig{background:var(--surface);border:1px solid var(--line);padding:20px 18px;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:520px}
+.fig text{font-family:var(--font-mono);fill:var(--fg)}
+.fig .lbl{fill:var(--muted);font-size:9.5px;letter-spacing:.07em}
+.fig .ttl{fill:var(--steel);font-size:9.5px;letter-spacing:.11em;font-weight:600}
+
+.toggle{position:fixed;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));z-index:20;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--surface);color:var(--muted);border:1px solid var(--line);padding:7px 11px;cursor:pointer}
+.toggle:hover{color:var(--steel);border-color:var(--steel)}
+
+footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{
+  .toc,.toggle{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  .layout{display:block}
+  section{padding-block:24px 0}
+  .tw,table,.beat,.note,.card,pre,figure{break-inside:avoid}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+
+<button class="toggle" id="themeBtn" type="button">Giao diện</button>
+
+<div class="shell">
+
+  <header class="masthead">
+    <p class="kicker">Game Design Document &middot; Bản nháp 1 &middot; 18.11.2026</p>
+    <h1>Pocket Legion</h1>
+    <p class="alt-names">Tên tạm &middot; thay thế: Banner Keep &middot; Last Banner &middot; Tiny Alliance</p>
+    <p class="pitch">
+      Pixel idle RPG chơi hoàn toàn offline. Bạn dẫn một đội năm anh hùng đi chiếm từng điểm
+      trên bản đồ. Trận đánh chạy tự động — thứ bạn thực sự điều khiển là <strong>đội hình</strong>.
+      Mỗi điểm chiếm được sinh tài nguyên vĩnh viễn, kể cả khi bạn đóng máy.
+    </p>
+    <ul class="chips">
+      <li>Thể loại: <b>Idle RPG / Auto-battler</b></li>
+      <li>Kết nối: <b>Offline hoàn toàn</b></li>
+      <li>Nền tảng: <b>Mobile, màn hình dọc</b></li>
+      <li>Engine: <b>Unity · 2D Animation</b></li>
+      <li>Quy mô: <b>Solo, full-time</b></li>
+      <li>Art: <b>AI gen + rig xương dùng chung</b></li>
+      <li>Tới soft launch: <b>7–9 tháng</b></li>
+    </ul>
+  </header>
+
+  <div class="layout">
+
+    <nav class="toc" aria-label="Mục lục">
+      <h2>Mục lục</h2>
+      <ol>
+        <li><a href="#s1"><span class="n">01</span><span>Luận điểm và điều kiện tiên quyết</span></a></li>
+        <li><a href="#s2"><span class="n">02</span><span>Core loop</span></a></li>
+        <li><a href="#s3"><span class="n">03</span><span>Đội hình — toàn bộ kỹ năng</span></a></li>
+        <li><a href="#s4"><span class="n">04</span><span>Bản đồ và thu nhập idle</span></a></li>
+        <li><a href="#s5"><span class="n">05</span><span>Anh hùng và thu thập</span></a></li>
+        <li><a href="#s6"><span class="n">06</span><span>Luật chiến đấu tự động</span></a></li>
+        <li><a href="#s7"><span class="n">07</span><span>Lớp xã hội giả lập</span></a></li>
+        <li><a href="#s8"><span class="n">08</span><span>Economy và tường CP</span></a></li>
+        <li><a href="#s9"><span class="n">09</span><span>Monetization</span></a></li>
+        <li><a href="#s10"><span class="n">10</span><span>Pipeline art: rig dùng chung</span></a></li>
+        <li><a href="#s11"><span class="n">11</span><span>Lộ trình 9 tháng</span></a></li>
+        <li><a href="#s12"><span class="n">12</span><span>Chỉ số và ngưỡng</span></a></li>
+        <li><a href="#s13"><span class="n">13</span><span>Rủi ro</span></a></li>
+        <li><a href="#a1"><span class="n">A</span><span>Mổ xẻ game tham chiếu</span></a></li>
+        <li><a href="#a2"><span class="n">B</span><span>So với Rust to Riches</span></a></li>
+      </ol>
+    </nav>
+
+    <main>
+
+      <!-- 01 -->
+      <section id="s1">
+        <p class="eyebrow">01</p>
+        <h2 class="sec">Luận điểm và điều kiện tiên quyết</h2>
+        <p>
+          Phát hiện mở đường cho tài liệu này: một pixel idle RPG có đủ bản đồ, thu thập anh hùng,
+          đội hình và cảm giác của một game đang sống — mà <strong>chạy hoàn toàn offline</strong>.
+          Nghĩa là rào cản thật của thể loại midcore không phải server, mà là
+          <strong>khối lượng nội dung và công cân bằng</strong>.
+        </p>
+        <div class="note key">
+          <span class="label">Luận điểm</span>
+          <p>
+            Một người làm có thể chạm tới midcore nếu giải được đúng hai bài toán:
+            <strong>sản xuất anh hùng hàng loạt mà không vẽ animation</strong> (mục 10), và
+            <strong>tạo chiều sâu bằng luật chơi thay vì bằng nội dung</strong> (mục 03).
+            Toàn bộ thiết kế dưới đây xoay quanh hai điều đó.
+          </p>
+        </div>
+        <div class="note warn">
+          <span class="label">Hai điều kiện tiên quyết — đọc trước khi cam kết</span>
+          <p>
+            <strong>Thời gian gấp 2–3 lần một game idle-lite:</strong> 7–9 tháng thay vì 12 tuần.
+          </p>
+          <p>
+            <strong>Ngân sách UA $300 không khớp thể loại.</strong> CPI idle RPG ở tier-1 là $2–5.
+            Ba trăm đô mua được 60–150 lượt cài, không đủ để đọc retention. Mục 12 nêu đường vòng,
+            nhưng nếu không có đường vòng nào chấp nhận được thì nên chọn concept khác.
+          </p>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section id="s2">
+        <p class="eyebrow">02</p>
+        <h2 class="sec">Core loop — 60 đến 100 giây</h2>
+        <div class="flow">
+          <div class="beat">
+            <div class="beat-n">1</div>
+            <div>
+              <h4>Chọn điểm trên bản đồ <span>10s</span></h4>
+              <p>Mỗi điểm hiện sẵn đội quân địch và một modifier địa hình. Không có gì giấu.</p>
+            </div>
+          </div>
+          <div class="arrow"></div>
+          <div class="beat">
+            <div class="beat-n">2</div>
+            <div>
+              <h4>Xếp đội hình <span>20–40s</span></h4>
+              <p>Lưới 3×3, năm anh hùng. Đây là toàn bộ phần kỹ năng của game.</p>
+              <p class="ad">Sửa lại bao nhiêu lần cũng được, miễn phí, trước khi bấm đánh.</p>
+            </div>
+          </div>
+          <div class="arrow"></div>
+          <div class="beat">
+            <div class="beat-n">3</div>
+            <div>
+              <h4>Trận đánh tự động <span>25–40s</span></h4>
+              <p>Xem, tua x2/x3, hoặc bỏ qua nếu điểm này đã thắng một lần.</p>
+            </div>
+          </div>
+          <div class="arrow"></div>
+          <div class="beat">
+            <div class="beat-n">4</div>
+            <div>
+              <h4>Chiếm điểm <span>10s</span></h4>
+              <p>Điểm đổi màu trên bản đồ và bắt đầu sinh tài nguyên mỗi giờ, vĩnh viễn.</p>
+              <p class="ad">Rewarded: nhân đôi chiến lợi phẩm.</p>
+            </div>
+          </div>
+          <div class="arrow"></div>
+          <div class="beat">
+            <div class="beat-n">5</div>
+            <div>
+              <h4>Nâng cấp <span>20s</span></h4>
+              <p>Lên cấp anh hùng, lắp trang bị, mở anh hùng mới. Rồi tới điểm khó hơn.</p>
+            </div>
+          </div>
+        </div>
+        <p>
+          Vòng này lặp 8–15 lần mỗi phiên. Khi gặp tường CP (mục 08), người chơi chuyển sang
+          farm điểm cũ hoặc đóng máy để thu nhập idle chạy — đó là lúc game chuyển từ active sang idle.
+        </p>
+      </section>
+
+      <!-- 03 -->
+      <section id="s3">
+        <p class="eyebrow">03</p>
+        <h2 class="sec">Đội hình — nơi chứa toàn bộ kỹ năng</h2>
+        <p>
+          Phần lớn idle RPG để đội hình ở mức trang trí: kéo thả vài ô, không ảnh hưởng mấy.
+          Đây là chỗ game này đi khác, và cũng là chỗ <strong>chiều sâu sinh ra từ luật chơi
+          chứ không từ nội dung</strong> — thứ duy nhất một người làm có thể cạnh tranh được.
+        </p>
+
+        <figure>
+          <div class="fig">
+            <svg viewBox="0 0 760 300" role="img" aria-label="Sơ đồ lưới đội hình ba nhân ba với liên kết và địa hình">
+              <text class="ttl" x="40" y="24">ĐỘI CỦA BẠN</text>
+              <text class="ttl" x="380" y="24">ĐỊCH — HIỆN TRƯỚC KHI ĐÁNH</text>
+
+              <g class="lbl" text-anchor="middle">
+                <text x="68" y="54">SAU</text><text x="130" y="54">GIỮA</text><text x="192" y="54">TRƯỚC</text>
+              </g>
+
+              <g fill="var(--surface-2)" stroke="var(--line)">
+                <rect x="40" y="64" width="56" height="56" rx="3"/><rect x="102" y="64" width="56" height="56" rx="3"/><rect x="164" y="64" width="56" height="56" rx="3"/>
+                <rect x="40" y="126" width="56" height="56" rx="3"/><rect x="102" y="126" width="56" height="56" rx="3"/><rect x="164" y="126" width="56" height="56" rx="3"/>
+                <rect x="40" y="188" width="56" height="56" rx="3"/><rect x="102" y="188" width="56" height="56" rx="3"/><rect x="164" y="188" width="56" height="56" rx="3"/>
+              </g>
+
+              <line x1="130" y1="154" x2="192" y2="154" stroke="var(--moss)" stroke-width="2" stroke-dasharray="4 3"/>
+
+              <g>
+                <rect x="44" y="68" width="48" height="48" rx="3" fill="var(--moss)"/>
+                <text x="68" y="97" text-anchor="middle" style="fill:var(--bg);font-size:13px;font-weight:600">T</text>
+                <rect x="44" y="130" width="48" height="48" rx="3" fill="var(--steel)"/>
+                <text x="68" y="159" text-anchor="middle" style="fill:var(--bg);font-size:13px;font-weight:600">P</text>
+                <rect x="106" y="130" width="48" height="48" rx="3" fill="var(--steel)"/>
+                <text x="130" y="159" text-anchor="middle" style="fill:var(--bg);font-size:13px;font-weight:600">C</text>
+                <rect x="168" y="68" width="48" height="48" rx="3" fill="var(--crimson)"/>
+                <text x="192" y="97" text-anchor="middle" style="fill:var(--bg);font-size:13px;font-weight:600">K</text>
+                <rect x="168" y="130" width="48" height="48" rx="3" fill="var(--crimson)"/>
+                <text x="192" y="159" text-anchor="middle" style="fill:var(--bg);font-size:13px;font-weight:600">S</text>
+              </g>
+
+              <text class="lbl" x="40" y="264">T trị liệu · P pháp · C cung · K kiếm · S khiên</text>
+              <text class="lbl" x="40" y="280" style="fill:var(--moss)">LIÊN KẾT: Cung đứng ngay sau Khiên → +25% chí mạng</text>
+
+              <text x="296" y="160" text-anchor="middle" style="font-size:15px;font-weight:600;fill:var(--muted)">VS</text>
+
+              <g fill="var(--surface-2)" stroke="var(--line)">
+                <rect x="380" y="64" width="56" height="56" rx="3"/><rect x="442" y="64" width="56" height="56" rx="3"/><rect x="504" y="64" width="56" height="56" rx="3"/>
+                <rect x="380" y="126" width="56" height="56" rx="3"/><rect x="442" y="126" width="56" height="56" rx="3"/><rect x="504" y="126" width="56" height="56" rx="3"/>
+                <rect x="380" y="188" width="56" height="56" rx="3"/><rect x="442" y="188" width="56" height="56" rx="3"/><rect x="504" y="188" width="56" height="56" rx="3"/>
+              </g>
+              <g fill="var(--muted)">
+                <rect x="384" y="68" width="48" height="48" rx="3"/>
+                <rect x="384" y="130" width="48" height="48" rx="3"/>
+                <rect x="446" y="130" width="48" height="48" rx="3"/>
+                <rect x="508" y="192" width="48" height="48" rx="3"/>
+              </g>
+              <text class="lbl" x="380" y="264">4 ĐƠN VỊ · CP 1 840 · DỒN HÀNG TRƯỚC</text>
+
+              <rect x="600" y="64" width="144" height="180" rx="3" fill="var(--steel-soft)" stroke="var(--steel)"/>
+              <text class="ttl" x="616" y="88">ĐỊA HÌNH</text>
+              <text x="616" y="112" style="font-size:14px;font-weight:600">ĐỒI DỐC</text>
+              <text class="lbl" x="616" y="138">Hàng sau +1 tầm</text>
+              <text class="lbl" x="616" y="156">Hàng trước −10% giáp</text>
+              <text class="lbl" x="616" y="188">Mỗi điểm trên bản đồ</text>
+              <text class="lbl" x="616" y="204">mang đúng một modifier.</text>
+              <text class="lbl" x="616" y="228">24 modifier khi launch.</text>
+            </svg>
+          </div>
+          <figcaption>Địch hiện trước, địa hình hiện trước, sửa đội hình miễn phí. Đây là bài toán đố, không phải canh bạc.</figcaption>
+        </figure>
+
+        <h3>Ba quy tắc tạo ra chiều sâu</h3>
+        <ul>
+          <li><strong>Vị trí quyết định ai bị đánh.</strong> Hàng trước hứng đòn, hàng sau an toàn
+          nhưng bị giới hạn tầm. Đặt pháp sư nhầm hàng là thua ngay.</li>
+          <li><strong>Liên kết kề ô.</strong> Mỗi anh hùng có 1–2 liên kết kích hoạt khi đứng cạnh
+          một tag phù hợp. Bốn mươi anh hùng tạo ra hàng trăm tổ hợp mà không tốn thêm nội dung nào.</li>
+          <li><strong>Địa hình đảo bài toán.</strong> Cùng một đội quân địch, đổi địa hình là đổi lời giải.
+          Hai mươi bốn modifier nhân với các tổ hợp đội hình cho lượng bài đố gần như vô hạn, chi phí sản xuất bằng không.</li>
+        </ul>
+
+        <div class="note key">
+          <span class="label">Vì sao điều này quan trọng với một người làm</span>
+          <p>
+            Chiều sâu sinh ra từ <strong>luật</strong> thì rẻ và vô hạn. Chiều sâu sinh ra từ
+            <strong>nội dung</strong> thì đắt và hữu hạn. Studio lớn mua được loại thứ hai; bạn thì không.
+          </p>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section id="s4">
+        <p class="eyebrow">04</p>
+        <h2 class="sec">Bản đồ và thu nhập idle</h2>
+        <p>
+          Bản đồ vừa là tiến trình, vừa là nguồn thu nhập idle, vừa là thứ khiến chữ
+          “Legion” có nghĩa. Người chơi nhìn thấy lãnh thổ của mình lan ra — một dạng
+          thanh tiến trình mà không ai thấy chán.
+        </p>
+
+        <figure>
+          <div class="fig">
+            <svg viewBox="0 0 760 260" role="img" aria-label="Sơ đồ bản đồ các điểm đã chiếm và chưa chiếm">
+              <g stroke="var(--line)" stroke-width="2" fill="none">
+                <path d="M60 120 L130 78 L205 108 L276 70 L348 104 L420 76 L492 112 L566 84 L642 118"/>
+                <path d="M130 78 L148 160 L228 190 L300 166 L372 196 L448 170 L520 200 L598 176"/>
+                <path d="M205 108 L228 190"/><path d="M348 104 L372 196"/><path d="M492 112 L520 200"/>
+              </g>
+              <g>
+                <circle cx="60" cy="120" r="13" fill="var(--moss)"/>
+                <circle cx="130" cy="78" r="13" fill="var(--moss)"/>
+                <circle cx="148" cy="160" r="13" fill="var(--moss)"/>
+                <circle cx="205" cy="108" r="13" fill="var(--moss)"/>
+                <circle cx="228" cy="190" r="13" fill="var(--moss)"/>
+                <circle cx="276" cy="70" r="13" fill="var(--moss)"/>
+                <circle cx="300" cy="166" r="13" fill="var(--crimson)"/>
+                <circle cx="348" cy="104" r="13" fill="var(--steel)"/>
+              </g>
+              <g fill="var(--surface-2)" stroke="var(--line)" stroke-width="2">
+                <circle cx="372" cy="196" r="13"/><circle cx="420" cy="76" r="13"/><circle cx="448" cy="170" r="13"/>
+                <circle cx="492" cy="112" r="13"/><circle cx="520" cy="200" r="13"/><circle cx="566" cy="84" r="13"/>
+                <circle cx="598" cy="176" r="13"/><circle cx="642" cy="118" r="13"/>
+              </g>
+              <text class="lbl" x="348" y="88" text-anchor="middle" style="fill:var(--steel)">ĐANG ĐÁNH</text>
+              <text class="lbl" x="300" y="150" text-anchor="middle" style="fill:var(--crimson)">BỊ PHẢN CÔNG</text>
+
+              <rect x="660" y="40" width="92" height="76" rx="3" fill="var(--moss-soft)" stroke="var(--moss)"/>
+              <text class="ttl" x="672" y="62" style="fill:var(--moss)">THU NHẬP</text>
+              <text x="672" y="84" style="font-size:14px;font-weight:600">+412</text>
+              <text class="lbl" x="672" y="102">mỗi giờ</text>
+
+              <g>
+                <circle cx="26" cy="228" r="7" fill="var(--moss)"/><text class="lbl" x="40" y="232">ĐÃ CHIẾM — SINH TÀI NGUYÊN</text>
+                <circle cx="260" cy="228" r="7" fill="var(--surface-2)" stroke="var(--line)" stroke-width="2"/><text class="lbl" x="274" y="232">CHƯA CHIẾM</text>
+                <circle cx="420" cy="228" r="7" fill="var(--crimson)"/><text class="lbl" x="434" y="232">PHẢN CÔNG — ĐÁNH LẠI ĐỂ GIỮ</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>120 điểm khi launch, chia 6 vùng. Mỗi điểm chiếm được là một dòng thu nhập nhỏ cộng dồn mãi mãi.</figcaption>
+        </figure>
+
+        <div class="tw">
+          <table>
+            <thead><tr><th>Thông số</th><th class="num">Giá trị</th></tr></thead>
+            <tbody>
+              <tr><td>Số điểm khi launch</td><td class="num">120, chia 6 vùng</td></tr>
+              <tr><td>Thu nhập mỗi điểm</td><td class="num">8–140/giờ tuỳ vùng</td></tr>
+              <tr><td>Cap tích luỹ offline</td><td class="num">4h → 12h (nâng cấp) → 16h (IAP)</td></tr>
+              <tr><td>Phản công</td><td class="num">1–2 điểm mỗi 6 giờ</td></tr>
+              <tr><td>Phần thưởng giữ điểm</td><td class="num">+20% thu nhập điểm đó trong 6 giờ</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          <strong>Phản công là cơ chế quan trọng nhất của bản đồ.</strong> Nó cho người chơi
+          một lý do cụ thể để mở app ngoài việc nhận tiền — có thứ đang bị mất nếu không vào.
+          Giữ nó nhẹ tay: không bao giờ mất điểm vĩnh viễn, chỉ mất thu nhập tạm thời.
+        </p>
+      </section>
+
+      <!-- 05 -->
+      <section id="s5">
+        <p class="eyebrow">05</p>
+        <h2 class="sec">Anh hùng và thu thập</h2>
+
+        <div class="note key">
+          <span class="label">Quyết định thiết kế lớn nhất sau đội hình</span>
+          <p>
+            <strong>Không có gacha.</strong> Anh hùng rơi theo tỉ lệ cố định từ những điểm cụ thể
+            trên bản đồ. Người chơi tra bảng là biết phải farm ở đâu.
+          </p>
+        </div>
+
+        <p>Thu thập xác định giải cùng lúc bốn vấn đề mà một game offline không có cách nào xử lý tốt:</p>
+        <ul>
+          <li>Không cần hệ thống pity, không cần cân bằng xác suất.</li>
+          <li>Không vướng quy định loot box ở EU, Bỉ, Hà Lan.</li>
+          <li>Không bị tố gian lận tỉ lệ — thứ luôn xảy ra với game offline vì người chơi
+          không có cách kiểm chứng.</li>
+          <li>Bán anh hùng cụ thể trong IAP được, thay vì bán lượt quay.</li>
+        </ul>
+
+        <div class="tw">
+          <table>
+            <caption>Cấu trúc anh hùng khi launch</caption>
+            <thead><tr><th>Hạng mục</th><th class="num">Số lượng</th><th>Ghi chú</th></tr></thead>
+            <tbody>
+              <tr><td>Tổng anh hùng</td><td class="num">40</td><td>Mục tiêu 60 sau 6 tháng</td></tr>
+              <tr><td>Lớp</td><td class="num">6</td><td>Khiên, Kiếm, Cung, Pháp, Trị liệu, Triệu hồi</td></tr>
+              <tr><td>Bậc hiếm</td><td class="num">4</td><td>Thường 18 · Hiếm 12 · Sử thi 8 · Huyền thoại 2</td></tr>
+              <tr><td>Liên kết mỗi anh hùng</td><td class="num">1–2</td><td>Nguồn gốc của mọi tổ hợp</td></tr>
+              <tr><td>Ô trang bị</td><td class="num">6</td><td>Chế từ tài nguyên điểm</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Ba trục nâng cấp</h3>
+        <ul>
+          <li><strong>Cấp</strong> — tiêu vàng. Trục chính, chạy liên tục.</li>
+          <li><strong>Sao</strong> — tiêu mảnh trùng. Trục dài hạn, tạo lý do farm lại điểm cũ.</li>
+          <li><strong>Trang bị</strong> — chế từ tài nguyên của các điểm đã chiếm. Nối bản đồ với sức mạnh.</li>
+        </ul>
+      </section>
+
+      <!-- 06 -->
+      <section id="s6">
+        <p class="eyebrow">06</p>
+        <h2 class="sec">Luật chiến đấu tự động</h2>
+        <p>
+          Trận đánh phải <strong>tất định</strong>: cùng một đội hình với cùng một đối thủ luôn
+          cho cùng kết quả. Đây không phải chi tiết kỹ thuật mà là điều kiện để đội hình trở thành
+          bài toán đố — nếu có ngẫu nhiên, người chơi sẽ đánh lại thay vì suy nghĩ.
+        </p>
+        <ul>
+          <li>5v5, thời gian trận 25–40 giây, hết giờ thì bên còn nhiều máu hơn thắng.</li>
+          <li>Mỗi đơn vị có thanh hồi chiêu; đầy thì tung kỹ năng. Không có né, không có trượt.</li>
+          <li>Chọn mục tiêu theo luật cố định của từng lớp (Kiếm đánh gần nhất, Cung đánh máu thấp nhất,
+          Pháp đánh cụm đông nhất).</li>
+          <li>Tốc độ x1 / x2 / x3. Mức x3 mở ở vùng 3 hoặc mua gói.</li>
+          <li><strong>Bỏ qua trận</strong> sau lần thắng đầu tiên ở điểm đó — bắt buộc phải có, nếu không
+          khâu farm sẽ giết game.</li>
+        </ul>
+        <div class="note warn">
+          <span class="label">Cạm bẫy</span>
+          <p>
+            Đừng làm hoạt ảnh kỹ năng quá dài. Người chơi sẽ xem nó vài nghìn lần. Mỗi kỹ năng
+            tối đa 0.8 giây, và phải cắt được giữa chừng khi tua nhanh.
+          </p>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section id="s7">
+        <p class="eyebrow">07</p>
+        <h2 class="sec">Lớp xã hội giả lập</h2>
+        <p>
+          Game offline vẫn có thể cho cảm giác đang sống. Đây là cách lấy phần lớn hook giữ chân
+          của midcore mà không trả một đồng hạ tầng nào.
+        </p>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Tính năng</th><th>Cách làm offline</th></tr></thead>
+            <tbody>
+              <tr><td>Bảng xếp hạng</td><td>200 hồ sơ dựng sẵn, CP tăng theo đường cong bám sát người chơi, luôn giữ họ ở hạng vừa đủ khó chịu</td></tr>
+              <tr><td>Đấu trường</td><td>Đối thủ là đội hình do AI sinh theo đúng CP hiện tại — khó vừa phải, luôn có cửa thắng</td></tr>
+              <tr><td>Liên minh</td><td>4 chỉ huy NPC, gửi quà hằng ngày, có vài dòng thoại thay đổi theo tiến trình</td></tr>
+              <tr><td>Sự kiện theo mùa</td><td>Timer chạy bằng giờ máy, nội dung nằm sẵn trong build</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note warn">
+          <span class="label">Ranh giới không được vượt</span>
+          <p>
+            Không bao giờ gọi các hồ sơ này là người chơi thật. Dùng từ “chỉ huy đối địch”,
+            “đối thủ huấn luyện”. Quảng cáo cũng không được nói là chơi với người thật.
+            Đây vừa là rủi ro chính sách cửa hàng, vừa là thứ người chơi sẽ phát hiện và
+            mất lòng tin — mà lòng tin là thứ duy nhất khiến họ chi tiền.
+          </p>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section id="s8">
+        <p class="eyebrow">08</p>
+        <h2 class="sec">Economy và tường CP</h2>
+        <p>
+          Toàn bộ nhịp của một idle RPG nằm ở <strong>tường CP</strong>: mỗi vùng mới đòi sức mạnh
+          cao hơn hẳn vùng trước, buộc người chơi dừng tiến và chuyển sang farm, chờ idle, hoặc trả tiền.
+          Thiết kế tường là phần khó nhất của thể loại này.
+        </p>
+
+        <figure>
+          <div class="fig">
+            <svg viewBox="0 0 760 282" role="img" aria-label="Biểu đồ CP yêu cầu theo bậc thang so với CP người chơi">
+              <text class="ttl" x="16" y="22">SỨC MẠNH ĐỘI (CP) — THANG LOGARIT</text>
+              <g stroke="var(--line)">
+                <line x1="70" y1="236" x2="730" y2="236"/>
+                <line x1="70" y1="160" x2="730" y2="160" stroke-dasharray="2 4"/>
+                <line x1="70" y1="84" x2="730" y2="84" stroke-dasharray="2 4"/>
+              </g>
+              <g class="lbl" text-anchor="end">
+                <text x="62" y="240">100</text><text x="62" y="164">1k</text><text x="62" y="88">10k</text>
+              </g>
+              <path d="M70 213 H180 V177 H290 V147 H400 V119 H510 V91 H620 V65 H730"
+                    fill="none" stroke="var(--crimson)" stroke-width="2.5"/>
+              <polyline fill="none" stroke="var(--steel)" stroke-width="2.5" stroke-linejoin="round"
+                points="70,228 130,218 180,208 240,190 290,172 350,154 400,141 460,124 510,112 570,96 620,86 680,72 730,60"/>
+              <g stroke="var(--muted)" stroke-width="1">
+                <line x1="186" y1="177" x2="186" y2="206"/>
+                <line x1="182" y1="177" x2="190" y2="177"/>
+                <line x1="182" y1="206" x2="190" y2="206"/>
+              </g>
+              <text class="lbl" x="196" y="196">TƯỜNG — FARM, CHỜ IDLE, HOẶC TRẢ TIỀN</text>
+              <text class="lbl" x="700" y="56" text-anchor="end" style="fill:var(--steel)">CP NGƯỜI CHƠI</text>
+              <text class="lbl" x="120" y="206" style="fill:var(--crimson)">CP YÊU CẦU</text>
+              <g class="lbl" text-anchor="middle">
+                <text x="125" y="254">VÙNG 1</text><text x="235" y="254">2</text><text x="345" y="254">3</text>
+                <text x="455" y="254">4</text><text x="565" y="254">5</text><text x="675" y="254">6</text>
+              </g>
+              <text class="lbl" x="730" y="274" text-anchor="end">TIẾN TRÌNH CHIẾN DỊCH</text>
+            </svg>
+          </div>
+          <figcaption>Tường thứ nhất phải rơi vào ngày 2–3, không sớm hơn. Tường đầu tiên gặp quá sớm là nguyên nhân rớt D1 phổ biến nhất của thể loại này.</figcaption>
+        </figure>
+
+        <div class="tw">
+          <table>
+            <caption>Nhịp tường theo vùng</caption>
+            <thead><tr><th class="num">Vùng</th><th class="num">CP yêu cầu</th><th>Gặp tường vào</th><th>Thời gian vượt</th></tr></thead>
+            <tbody>
+              <tr><td class="num">1</td><td class="num">200</td><td>Không có tường</td><td class="num">—</td></tr>
+              <tr><td class="num">2</td><td class="num">600</td><td>Ngày 2</td><td class="num">2–4 giờ</td></tr>
+              <tr><td class="num">3</td><td class="num">1 500</td><td>Ngày 4</td><td class="num">1 ngày</td></tr>
+              <tr><td class="num">4</td><td class="num">3 500</td><td>Ngày 8</td><td class="num">2–3 ngày</td></tr>
+              <tr><td class="num">5</td><td class="num">8 000</td><td>Ngày 16</td><td class="num">4–6 ngày</td></tr>
+              <tr><td class="num">6</td><td class="num">18 000</td><td>Ngày 30</td><td class="num">1–2 tuần</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Bốn loại tài nguyên</h3>
+        <ul>
+          <li><strong>Vàng</strong> — lên cấp anh hùng. Nguồn chính từ thu nhập điểm.</li>
+          <li><strong>Mảnh</strong> — lên sao. Chỉ rơi từ điểm cụ thể.</li>
+          <li><strong>Vật liệu</strong> — chế trang bị. Mỗi vùng cho một loại riêng.</li>
+          <li><strong>Ngọc</strong> — tăng tốc, mở ô, mua trong IAP.</li>
+        </ul>
+      </section>
+
+      <!-- 09 -->
+      <section id="s9">
+        <p class="eyebrow">09</p>
+        <h2 class="sec">Monetization</h2>
+        <p>
+          Idle RPG offline kiếm tiền khá hơn idle-lite nhờ đường cong sức mạnh dài hơn, nhưng
+          kém hơn midcore có server vì thiếu áp lực cạnh tranh xã hội thật. Mục tiêu thực tế:
+          <strong>ARPDAU $0.10 – $0.25</strong>.
+        </p>
+
+        <div class="tw">
+          <table>
+            <caption>IAP — sáu SKU</caption>
+            <thead><tr><th>SKU</th><th class="num">Giá</th><th>Ghi chú</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Bỏ quảng cáo + x2 thu nhập offline</strong></td><td class="num">$4.99</td><td>Vẫn là SKU bán chạy nhất</td></tr>
+              <tr><td>Gói khởi đầu</td><td class="num">$0.99</td><td>Phiên 2–3, một lần</td></tr>
+              <tr><td>Thẻ tháng — ngọc mỗi ngày</td><td class="num">$4.99</td><td>Timer local, không cần server</td></tr>
+              <tr><td>Gói anh hùng sử thi cụ thể</td><td class="num">$9.99</td><td>Bán đích danh, không bán lượt quay</td></tr>
+              <tr><td>Ngọc nhỏ / lớn</td><td class="num">$1.99 / $19.99</td><td></td></tr>
+              <tr><td>Mở tốc độ x3 vĩnh viễn</td><td class="num">$2.99</td><td>Bán sự tiện lợi, không bán sức mạnh</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tw">
+          <table>
+            <caption>Rewarded ads — mục tiêu 8–12 lượt/DAU</caption>
+            <thead><tr><th class="num">#</th><th>Vị trí</th></tr></thead>
+            <tbody>
+              <tr><td class="num">1</td><td>Nhân đôi thu nhập offline ở màn claim</td></tr>
+              <tr><td class="num">2</td><td>Nhân đôi chiến lợi phẩm sau khi chiếm điểm</td></tr>
+              <tr><td class="num">3</td><td>Đánh lại đấu trường khi thua</td></tr>
+              <tr><td class="num">4</td><td>Rương liên minh mỗi 4 giờ</td></tr>
+              <tr><td class="num">5</td><td>Tua nhanh 2 giờ thu nhập</td></tr>
+              <tr><td class="num">6</td><td>Lượt chế trang bị miễn phí mỗi ngày</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section id="s10">
+        <p class="eyebrow">10</p>
+        <h2 class="sec">Pipeline art — rig xương dùng chung</h2>
+        <p>
+          Đây là mục quyết định concept này khả thi hay không. Một idle RPG cần 40 anh hùng biết
+          đứng, chạy, đánh, trúng đòn và chết. AI không sinh được sprite sheet. Lời giải là
+          <strong>không ai phải vẽ animation cả</strong>.
+        </p>
+
+        <figure>
+          <div class="fig">
+            <svg viewBox="0 0 760 196" role="img" aria-label="Sơ đồ pipeline rig xương dùng chung cho anh hùng">
+              <text class="ttl" x="8" y="22">MỘT BỘ XƯƠNG — BỐN MƯƠI ANH HÙNG</text>
+              <g fill="var(--surface-2)" stroke="var(--line)">
+                <rect x="8" y="44" width="136" height="80" rx="3"/>
+                <rect x="166" y="44" width="136" height="80" rx="3"/>
+                <rect x="324" y="44" width="136" height="80" rx="3"/>
+                <rect x="482" y="44" width="136" height="80" rx="3"/>
+                <rect x="640" y="44" width="112" height="80" rx="3" fill="var(--steel-soft)" stroke="var(--steel)"/>
+              </g>
+              <g text-anchor="middle">
+                <text class="ttl" x="76" y="70">AI SINH</text>
+                <text class="lbl" x="76" y="88">1 ảnh chibi</text>
+                <text class="lbl" x="76" y="104">tư thế chuẩn A-pose</text>
+
+                <text class="ttl" x="234" y="70">CẮT</text>
+                <text class="lbl" x="234" y="88">8 phần rời</text>
+                <text class="lbl" x="234" y="104">đầu, thân, tay, chân</text>
+
+                <text class="ttl" x="392" y="70">BIND</text>
+                <text class="lbl" x="392" y="88">vào MỘT skeleton</text>
+                <text class="lbl" x="392" y="104">Unity 2D Animation</text>
+
+                <text class="ttl" x="550" y="70">6 CLIP</text>
+                <text class="lbl" x="550" y="88">idle · chạy · đánh</text>
+                <text class="lbl" x="550" y="104">chiêu · trúng · chết</text>
+
+                <text class="ttl" x="696" y="70">XONG</text>
+                <text class="lbl" x="696" y="88">30–45 phút</text>
+                <text class="lbl" x="696" y="104">mỗi anh hùng</text>
+              </g>
+              <g stroke="var(--steel)" stroke-width="2" fill="var(--steel)">
+                <line x1="148" y1="84" x2="158" y2="84"/><path d="M156 79 L163 84 L156 89 Z" stroke="none"/>
+                <line x1="306" y1="84" x2="316" y2="84"/><path d="M314 79 L321 84 L314 89 Z" stroke="none"/>
+                <line x1="464" y1="84" x2="474" y2="84"/><path d="M472 79 L479 84 L472 89 Z" stroke="none"/>
+                <line x1="622" y1="84" x2="632" y2="84"/><path d="M630 79 L637 84 L630 89 Z" stroke="none"/>
+              </g>
+              <text class="lbl" x="8" y="156">Sáu clip viết một lần, dùng cho mọi anh hùng, vì mọi anh hùng chung một bộ xương.</text>
+              <text class="lbl" x="8" y="174">40 anh hùng ≈ 25–30 giờ công. Viết editor script tự bind thì còn khoảng 10 phút mỗi con.</text>
+            </svg>
+          </div>
+          <figcaption>Không có bước nào trong chuỗi này cần kỹ năng animation. Đây là thứ biến một dự án 2 năm thành một dự án 9 tháng.</figcaption>
+        </figure>
+
+        <h3>Yêu cầu bắt buộc với ảnh AI</h3>
+        <ul>
+          <li>Đúng <strong>một tư thế chuẩn</strong> cho mọi anh hùng: chính diện, A-pose, tay dang nhẹ,
+          chân tách rời, nền trong suốt.</li>
+          <li>Tỉ lệ chibi cố định: đầu chiếm 1/3 chiều cao. Lệch tỉ lệ là bind vào xương sẽ méo.</li>
+          <li>Vũ khí vẽ <strong>tách rời</strong> khỏi tay, để bind vào xương bàn tay.</li>
+          <li>Không có bóng đổ, không có hiệu ứng, không có nền.</li>
+        </ul>
+
+        <pre>[STYLE SUFFIX — anh hùng]
+, chibi game character, strict front view, A-pose with arms slightly
+out, legs apart, head one third of body height, flat cel shading,
+thick clean outline, transparent background, no shadow, no effects,
+weapon held away from body, full body, centered</pre>
+
+        <p>
+          Phần còn lại của art là sân chơi của AI, không cần rig: <strong>chân dung</strong> anh hùng
+          (dùng trong menu, chất lượng cao), <strong>icon trang bị</strong>, <strong>tile bản đồ</strong>,
+          <strong>nền trận đánh</strong>, <strong>icon tài nguyên</strong>.
+        </p>
+      </section>
+
+      <!-- 11 -->
+      <section id="s11">
+        <p class="eyebrow">11</p>
+        <h2 class="sec">Lộ trình 9 tháng</h2>
+
+        <figure>
+          <div class="fig">
+            <svg viewBox="0 0 760 266" role="img" aria-label="Biểu đồ lộ trình 9 tháng với các gate">
+              <line x1="210" y1="34" x2="744" y2="34" stroke="var(--line)"/>
+              <g class="lbl" text-anchor="middle">
+                <text x="269" y="24">T2</text><text x="388" y="24">T4</text><text x="507" y="24">T6</text>
+                <text x="626" y="24">T8</text><text x="715" y="24">T9</text>
+              </g>
+              <g stroke="var(--line)" stroke-dasharray="2 5">
+                <line x1="329" y1="40" x2="329" y2="240"/><line x1="448" y1="40" x2="448" y2="240"/>
+                <line x1="567" y1="40" x2="567" y2="240"/><line x1="686" y1="40" x2="686" y2="240"/>
+              </g>
+
+              <rect x="210" y="54" width="59" height="18" rx="2" fill="var(--steel)"/>
+              <rect x="269" y="88" width="60" height="18" rx="2" fill="var(--steel)"/>
+              <rect x="329" y="122" width="59" height="18" rx="2" fill="var(--steel)"/>
+              <rect x="388" y="156" width="179" height="18" rx="2" fill="var(--moss)"/>
+              <rect x="567" y="190" width="59" height="18" rx="2" fill="var(--moss)"/>
+              <rect x="626" y="224" width="118" height="18" rx="2" fill="var(--steel)"/>
+
+              <g fill="var(--steel)" stroke="var(--bg)" stroke-width="1.5">
+                <path d="M269 56 L277 63 L269 70 L261 63 Z"/>
+                <path d="M388 124 L396 131 L388 138 L380 131 Z"/>
+                <path d="M744 226 L752 233 L744 240 L736 233 Z"/>
+              </g>
+
+              <g class="lbl">
+                <text x="8" y="67"><tspan class="ttl">TH1</tspan>    Sim trận + đội hình</text>
+                <text x="8" y="101"><tspan class="ttl">TH2</tspan>    Rig pipeline + 8 hero</text>
+                <text x="8" y="135"><tspan class="ttl">TH3</tspan>    Creative + test CPI</text>
+                <text x="8" y="169"><tspan class="ttl">TH4–6</tspan>    40 hero, 120 điểm, meta</text>
+                <text x="8" y="203"><tspan class="ttl">TH7</tspan>    SDK + soft launch</text>
+                <text x="8" y="237"><tspan class="ttl">TH8–9</tspan>    Tuning, quyết scale</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>Gate tháng 1 là câu hỏi “đội hình có đáng nghĩ không”. Gate tháng 3 là CPI. Chỉ sau hai gate đó mới đổ công vào 40 anh hùng.</figcaption>
+        </figure>
+
+        <div class="tw">
+          <table>
+            <thead><tr><th class="num">Tháng</th><th>Việc</th><th>Gate</th></tr></thead>
+            <tbody>
+              <tr><td class="num">1</td><td>Sim chiến đấu tất định, lưới đội hình, 6 lớp, 12 liên kết, 8 địa hình. Art placeholder hình khối</td><td><span class="gate">Đội hình có đáng nghĩ không?</span></td></tr>
+              <tr><td class="num">2</td><td>Rig xương dùng chung, 8 anh hùng thật, 20 điểm bản đồ, vòng lặp đầy đủ</td><td></td></tr>
+              <tr><td class="num">3</td><td>Creative + test CPI ở tier-3</td><td><span class="gate">CPI tier-3 &lt; $0.80?</span></td></tr>
+              <tr><td class="num">4–6</td><td>40 anh hùng, 120 điểm, trang bị, đấu trường, liên minh NPC, bảng xếp hạng</td><td></td></tr>
+              <tr><td class="num">7</td><td>SDK ads/IAP/analytics, chống lùi giờ, backup save. Soft launch</td><td></td></tr>
+              <tr><td class="num">8–9</td><td>Đọc số, sửa tường CP, cân bằng economy</td><td><span class="gate">D7 ≥ 20%, D30 ≥ 8%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section id="s12">
+        <p class="eyebrow">12</p>
+        <h2 class="sec">Chỉ số và ngưỡng</h2>
+
+        <div class="note warn">
+          <span class="label">Bài toán UA — phải giải trước khi bắt đầu</span>
+          <p>
+            CPI idle RPG ở tier-1 là $2–5. Với $300 bạn mua được 60–150 lượt cài, không đủ để đọc
+            bất cứ thứ gì ngoài D1 thô. Có ba đường vòng, chọn một:
+          </p>
+        </div>
+
+        <ol>
+          <li><strong>Test ở tier-3</strong> (Việt Nam, Indonesia, Philippines) nơi CPI rơi về
+          $0.30–0.80. $250 cho khoảng 400 lượt cài — đủ đọc D1 và D3, chưa đủ đọc D7.</li>
+          <li><strong>Đi organic trước.</strong> ASO cộng clip TikTok về cơ chế đội hình.
+          Thể loại này có cộng đồng chịu xem nội dung, khác hẳn hyper-casual. Chậm nhưng miễn phí.</li>
+          <li><strong>Dời UA về sau.</strong> Soft launch organic, có doanh thu rồi mới tái đầu tư.
+          Chậm nhất nhưng ít rủi ro nhất với một người không lương.</li>
+        </ol>
+
+        <div class="tw">
+          <table>
+            <thead><tr><th>Chỉ số</th><th class="num">Ngưỡng</th><th>Nếu dưới</th></tr></thead>
+            <tbody>
+              <tr><td>CPI tier-3</td><td class="num">&lt; $0.80</td><td>Sửa creative. Trên $1.2 thì dừng</td></tr>
+              <tr><td>D1</td><td class="num">≥ 38%</td><td>Tường vùng 2 đang tới quá sớm</td></tr>
+              <tr><td>D7</td><td class="num">≥ 20%</td><td>Thu nhập điểm và nhịp mở anh hùng quá chậm</td></tr>
+              <tr><td>D30</td><td class="num">≥ 8%</td><td>Thiếu mục tiêu dài hạn sau vùng 4</td></tr>
+              <tr><td>Session mỗi ngày</td><td class="num">3–6</td><td>Cap offline đang quá dài</td></tr>
+              <tr><td>Playtime D1</td><td class="num">≥ 18 phút</td><td></td></tr>
+              <tr><td>Rewarded view / DAU</td><td class="num">8–12</td><td></td></tr>
+              <tr><td>Tỉ lệ sửa đội hình trước trận</td><td class="num">≥ 35%</td><td class="bad">Chỉ số sống còn — dưới mức này nghĩa là đội hình chưa thành bài toán, và cả concept mất điểm khác biệt</td></tr>
+              <tr><td>ARPDAU</td><td class="num">$0.10–0.25</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section id="s13">
+        <p class="eyebrow">13</p>
+        <h2 class="sec">Rủi ro</h2>
+        <div class="tw">
+          <table>
+            <thead><tr><th class="num">#</th><th>Rủi ro</th><th>Cách xử lý</th></tr></thead>
+            <tbody>
+              <tr><td class="num">1</td><td class="bad">Ngân sách UA không khớp thể loại</td><td>Ba đường vòng ở mục 12. Nếu không chấp nhận được đường nào thì đây là lý do chính đáng để chọn concept khác.</td></tr>
+              <tr><td class="num">2</td><td>9 tháng solo không lương</td><td>Hai gate ở tháng 1 và tháng 3 tồn tại để bạn có thể dừng sớm mà chỉ mất 3 tháng thay vì 9.</td></tr>
+              <tr><td class="num">3</td><td>Thể loại cực đông</td><td>Điểm khác biệt phải là đội hình như bài toán đố và thu thập xác định. Cả hai đều khó thể hiện trong 5 giây quảng cáo — xem rủi ro 4.</td></tr>
+              <tr><td class="num">4</td><td class="bad">Hook quảng cáo yếu hơn hẳn game cào thẻ</td><td>Công thức khả dĩ: đặt sai đội hình thì thua, kéo một anh hùng sang ô khác thì thắng. Phải test ở tháng 3, không muộn hơn.</td></tr>
+              <tr><td class="num">5</td><td>Gian lận đồng hồ hệ thống</td><td>Lưu timestamp lần cuối, cộng dồn theo thời gian thực đã trôi, bỏ qua phần chênh nếu phát hiện lùi giờ.</td></tr>
+              <tr><td class="num">6</td><td>Mất save khi đổi máy</td><td>Xuất/nhập mã save bằng chuỗi ký tự, cộng backup vào Google Play Games Saved Games. Đây là lý do bỏ game số một của người chơi lâu năm.</td></tr>
+              <tr><td class="num">7</td><td>Hết nội dung sau 4–6 tuần</td><td>120 điểm là đủ cho một chu kỳ. Lên kế hoạch update vùng 7–8 ngay từ đầu, hoặc chấp nhận đường cong doanh thu ngắn.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- A -->
+      <section id="a1">
+        <p class="eyebrow">Phụ lục A</p>
+        <h2 class="sec">Mổ xẻ game tham chiếu</h2>
+        <p>
+          <em>RPG Heroes: Alliance Legend</em> — pixel art, màn hình dọc, bản đồ top-down,
+          chiến đấu tự động có đặt đội hình, chỉ số CP, thanh nav 6 tab. Đã xác nhận qua chơi thực tế:
+          <strong>chạy hoàn toàn offline</strong>.
+        </p>
+        <div class="grid2">
+          <div class="card">
+            <h4>Lấy gì</h4>
+            <p>Khung idle RPG offline · pixel chibi nhẹ máy · auto-battle bỏ qua kỹ năng thao tác ·
+            bản đồ làm thanh tiến trình · lớp xã hội giả lập · tutorial dắt tay không cho thua</p>
+          </div>
+          <div class="card">
+            <h4>Bỏ gì</h4>
+            <p>Gacha xác suất — đổi sang thu thập xác định · đội hình trang trí — đổi thành bài toán đố ·
+            6 tab nav rối — rút xuống 4 · thiếu lý do quay lại — thêm cơ chế phản công</p>
+          </div>
+        </div>
+        <p>
+          Bài học lớn nhất rút ra không nằm ở thiết kế mà ở chi phí: thể loại này
+          <strong>không đòi hỏi backend</strong>. Rào cản thật là 40 anh hùng có animation và
+          một đường cong tường CP được cân bằng tử tế. Tài liệu này tấn công đúng hai thứ đó
+          ở mục 10 và mục 08.
+        </p>
+      </section>
+
+      <!-- B -->
+      <section id="a2">
+        <p class="eyebrow">Phụ lục B</p>
+        <h2 class="sec">So với Rust to Riches</h2>
+        <p>
+          Hai concept nhắm hai cửa khác nhau. Bảng này để quyết định, không phải để xếp hạng.
+        </p>
+        <div class="tw">
+          <table>
+            <thead><tr><th></th><th>Rust to Riches</th><th>Pocket Legion</th></tr></thead>
+            <tbody>
+              <tr><td>Thời gian tới soft launch</td><td class="good">3 tháng</td><td>7–9 tháng</td></tr>
+              <tr><td>Hợp ngân sách $300</td><td class="good">Có</td><td class="bad">Không — cần đường vòng</td></tr>
+              <tr><td>Sức mạnh hook quảng cáo</td><td class="good">Rất mạnh</td><td class="bad">Yếu, phải tìm</td></tr>
+              <tr><td>Hợp AI art</td><td class="good">Hoàn hảo — ảnh tĩnh thuần</td><td>Tốt, nhưng cần rig</td></tr>
+              <tr><td>Chiều sâu giữ chân</td><td>Vừa</td><td class="good">Cao</td></tr>
+              <tr><td>ARPDAU</td><td class="num">$0.07–0.15</td><td class="num good">$0.10–0.25</td></tr>
+              <tr><td>D30</td><td class="num">6–9%</td><td class="num good">8–12%</td></tr>
+              <tr><td>Mức độ đông clone</td><td class="good">Thưa</td><td class="bad">Rất đông</td></tr>
+              <tr><td>Rủi ro nếu thất bại</td><td class="good">Mất 3 tháng</td><td class="bad">Mất 9 tháng</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note key">
+          <span class="label">Cách đọc bảng này</span>
+          <p>
+            Rust to Riches là <strong>cược rẻ, hook mạnh, trần thấp hơn</strong>.
+            Pocket Legion là <strong>cược đắt, hook yếu, trần cao hơn</strong>.
+            Với một người solo không lương và $300 trong tay, thứ tự hợp lý là làm cái rẻ trước:
+            nếu nó sống, nó tài trợ cho cái đắt — kể cả khi nó chết, ba tháng học được vẫn dùng lại được
+            cho dự án sau.
+          </p>
+        </div>
+      </section>
+
+      <footer>
+        Pocket Legion — Game Design Document, bản nháp 1, 18.11.2026.
+        Tài liệu nội bộ, mọi con số là giả định khởi điểm cần kiểm chứng bằng soft launch.
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('themeBtn');
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem('pl-theme');
+    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  btn.addEventListener('click', function () {
+    var isDark = root.getAttribute('data-theme') === 'dark' ||
+      (!root.hasAttribute('data-theme') &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('pl-theme', next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>
